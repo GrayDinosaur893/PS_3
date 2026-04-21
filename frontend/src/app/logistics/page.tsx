@@ -29,10 +29,41 @@ export default function LogisticsTracker() {
           </h2>
           <div className="flex-1 bg-slate-900/50 rounded-xl border border-slate-700/50 overflow-hidden relative min-h-[400px]">
              {/* Map Grid Background */}
-             <div className="absolute inset-0 opacity-20 bg-[linear-gradient(rgba(255,255,255,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.1)_1px,transparent_1px)] bg-[size:40px_40px]"></div>
+             <div className="absolute inset-0 opacity-20 bg-[linear-gradient(rgba(6,182,212,0.2)_1px,transparent_1px),linear-gradient(90deg,rgba(6,182,212,0.2)_1px,transparent_1px)] bg-[size:40px_40px]"></div>
+
+             {/* SVG Glowing Routes */}
+             <svg className="absolute inset-0 w-full h-full pointer-events-none" preserveAspectRatio="none">
+               <defs>
+                 <linearGradient id="routeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                   <stop offset="0%" stopColor="#06b6d4" stopOpacity="0.8" />
+                   <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.8" />
+                 </linearGradient>
+               </defs>
+               {/* Abstract geometric transit lanes */}
+               <path d="M 20% 30% C 30% 10%, 40% 50%, 50% 50%" fill="none" stroke="url(#routeGrad)" strokeWidth="2" strokeDasharray="4 4" className="animate-[pulse_2s_ease-in-out_infinite]" />
+               <path d="M 50% 50% L 80% 25%" fill="none" stroke="url(#routeGrad)" strokeWidth="3" />
+               <path d="M 50% 50% L 40% 75% L 80% 75%" fill="none" stroke="url(#routeGrad)" strokeWidth="2" strokeDasharray="6 6" />
+             </svg>
              
+             {/* Infrastructure Nodes (Hubs) */}
+             <div className="absolute top-[30%] left-[20%] w-4 h-4 bg-cyan-400 rounded-full shadow-[0_0_20px_#06b6d4] -translate-x-1/2 -translate-y-1/2 z-0">
+               <span className="absolute top-6 left-1/2 -translate-x-1/2 text-xs font-bold text-cyan-200 whitespace-nowrap bg-slate-900/80 px-2 py-1 rounded border border-cyan-500/30">Testing Lab</span>
+             </div>
+             <div className="absolute top-[50%] left-[50%] w-6 h-6 bg-blue-500 rounded-full shadow-[0_0_30px_#3b82f6] -translate-x-1/2 -translate-y-1/2 z-0 animate-pulse border-2 border-cyan-300">
+               <span className="absolute top-8 left-1/2 -translate-x-1/2 text-sm font-bold text-blue-200 whitespace-nowrap bg-slate-900/80 px-2 py-1 rounded border border-blue-500/30">Primary Factory Hub</span>
+             </div>
+             <div className="absolute top-[25%] left-[80%] w-4 h-4 bg-cyan-400 rounded-full shadow-[0_0_20px_#06b6d4] -translate-x-1/2 -translate-y-1/2 z-0">
+               <span className="absolute top-6 left-1/2 -translate-x-1/2 text-xs font-bold text-cyan-200 whitespace-nowrap bg-slate-900/80 px-2 py-1 rounded border border-cyan-500/30">Launch Pad A</span>
+             </div>
+             <div className="absolute top-[75%] left-[40%] w-4 h-4 bg-indigo-400 rounded-full shadow-[0_0_20px_#818cf8] -translate-x-1/2 -translate-y-1/2 z-0">
+               <span className="absolute top-6 left-1/2 -translate-x-1/2 text-xs font-bold text-indigo-200 whitespace-nowrap bg-slate-900/80 px-2 py-1 rounded border border-indigo-500/30">Assembly Dock</span>
+             </div>
+             <div className="absolute top-[75%] left-[80%] w-4 h-4 bg-indigo-400 rounded-full shadow-[0_0_20px_#818cf8] -translate-x-1/2 -translate-y-1/2 z-0">
+               <span className="absolute top-6 left-1/2 -translate-x-1/2 text-xs font-bold text-indigo-200 whitespace-nowrap bg-slate-900/80 px-2 py-1 rounded border border-indigo-500/30">Export Vault</span>
+             </div>
+             
+             {/* Live Moving Assets */}
              {shipments.map((s, i) => {
-               // Map lat/long constraints roughly to 0-100% for SVG positioning
                const startLat = 18;
                const endLat = 29;
                const startLng = 72;
@@ -44,15 +75,19 @@ export default function LogisticsTracker() {
                return (
                  <motion.div
                    key={s.id}
-                   className="absolute group"
+                   className="absolute group z-20 cursor-pointer"
                    animate={{ top: `${top}%`, left: `${left}%` }}
                    transition={{ duration: 2.5, ease: 'linear' }}
                  >
-                   <div className="relative -ml-4 -mt-4 z-10 p-2 bg-blue-600 rounded-full shadow-[0_0_15px_rgba(37,99,235,0.8)] border-2 border-white">
+                   <div className="relative -ml-4 -mt-4 p-2 bg-blue-600 rounded-full shadow-[0_0_25px_rgba(59,130,246,0.9)] border-2 border-cyan-200 hover:scale-125 transition-transform">
                       <Truck size={16} className="text-white" />
                    </div>
-                   <div className="absolute top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-xs px-2 py-1 rounded border border-slate-600 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
-                     {s.id}
+                   
+                   {/* HUD Hover Detail */}
+                   <div className="absolute bottom-10 left-1/2 -translate-x-1/2 bg-slate-900/95 backdrop-blur shadow-xl text-left p-3 rounded-lg border border-cyan-500/50 w-48 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                     <div className="font-bold text-cyan-300 border-b border-white/10 pb-1 mb-2">{s.id}</div>
+                     <div className="text-xs text-slate-300"><b>ETA:</b> {s.eta}</div>
+                     <div className="text-xs text-slate-300"><b>Status:</b> {s.status === 'DELAYED' ? <span className="text-amber-500">Delay Risk</span> : <span className="text-green-400">Optimal Transit</span>}</div>
                    </div>
                  </motion.div>
                )

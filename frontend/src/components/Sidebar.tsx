@@ -1,10 +1,16 @@
-import { Activity, LayoutDashboard, Truck, Settings, Drill, CheckCircle } from 'lucide-react';
+'use client';
+
+import { Activity, LayoutDashboard, Truck, Settings, Drill, CheckCircle, Cpu } from 'lucide-react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 export default function Sidebar() {
+  const pathname = usePathname();
+  
   const routes = [
     { name: 'Dashboard', path: '/', icon: LayoutDashboard },
     { name: 'Manufacturing', path: '/manufacturing', icon: Drill },
+    { name: 'Component Tracker', path: '/components', icon: Cpu },
     { name: 'Quality', path: '/quality', icon: CheckCircle },
     { name: 'Logistics', path: '/logistics', icon: Truck },
     { name: 'Analytics', path: '/analytics', icon: Activity },
@@ -21,12 +27,23 @@ export default function Sidebar() {
       </div>
       
       <nav className="flex-1 space-y-2">
-        {routes.map((route) => (
-          <Link href={route.path} key={route.name} className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/10 cursor-pointer transition-colors text-slate-300 hover:text-white">
-            <route.icon size={20} />
-            <span className="font-medium">{route.name}</span>
-          </Link>
-        ))}
+        {routes.map((route) => {
+          const isActive = pathname === route.path;
+          return (
+            <Link 
+              href={route.path} 
+              key={route.name} 
+              className={`flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer transition-colors ${
+                isActive 
+                  ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30' 
+                  : 'hover:bg-white/10 text-slate-300 hover:text-white border border-transparent'
+              }`}
+            >
+              <route.icon size={20} />
+              <span className="font-medium">{route.name}</span>
+            </Link>
+          );
+        })}
       </nav>
       
       <div className="mt-auto p-4 glass-card rounded-xl text-center border-cyan-500/30 border">
